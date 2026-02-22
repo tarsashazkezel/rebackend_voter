@@ -50,8 +50,16 @@ class MeetingService
 
     public function update(Meeting $meeting, array $data): Meeting
     {
-        $meeting->update($data);
-        return $meeting;
+        // $meeting->update($data);
+        // return $meeting;
+        $meeting->update([
+        'title' => $data['title'],
+        'meeting_date' => $data['meeting_date'],
+        'location' => $data['location'],
+    ]);
+
+    return $meeting->load(['agenda_items.resolutions.votes']);
+    
     }
 
     public function delete(Meeting $meeting): void
