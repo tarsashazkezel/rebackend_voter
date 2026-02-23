@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'ownership_ratio' => 'required|numeric|min:0|max:100',
+            // 'ownership_ratio' => 'required|numeric|min:0|max:100',
         ];
     }
 
@@ -38,17 +38,17 @@ class RegisterRequest extends FormRequest
             'email.required' => 'Az email megadása kötelező.',
             'email.unique' => 'Ez az email már regisztrálva van.',
             'password.confirmed' => 'A jelszavak nem egyeznek.',
-            'ownership_ratio.required' => 'A tulajdoni hányad megadása kötelező.',
-            'ownership_ratio.numeric' => 'A tulajdoni hányad szám kell legyen.',
+            // 'ownership_ratio.required' => 'A tulajdoni hányad megadása kötelező.',
+            // 'ownership_ratio.numeric' => 'A tulajdoni hányad szám kell legyen.',
         ];
     }
-    public function failedValidation( Validator $validator ) {
+    // public function failedValidation( Validator $validator ) {
 
-        throw new HttpResponseException( response()->json([
+    //     throw new HttpResponseException( response()->json([
 
-            "success" => false,
-            "message" => "Adatbeviteli hiba",
-            "data" => $validator->errors()
-        ]));
-    }
+    //         "success" => false,
+    //         "message" => "Adatbeviteli hiba",
+    //         "data" => $validator->errors()
+    //     ]));
+    // }
 }

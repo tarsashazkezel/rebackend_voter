@@ -21,7 +21,7 @@ class AuthenticationController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' =>bcrypt($data['password']),
-            'ownership_ratio' => $data['ownership_ratio'],
+            'ownership_ratio' => 0, ['ownership_ratio'], //alapbol 0, az admin fogja modositani
             'role_id' => 2, // pl. tulajdonos
         ]);
 

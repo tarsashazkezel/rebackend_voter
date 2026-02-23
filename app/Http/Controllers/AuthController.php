@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Http\Requests\RegisterRequest;
+use App\Traits\ApiResponse;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -39,5 +42,22 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Sikeres kijelentkezés']);
+    }
+    
+    public function register(RegisterRequest $request)
+    {
+        $data = $request->validated();
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' =>bcrypt($data['password']),
+            'ownership_ratio' => 0, ['ownership_ratio'], //alapbol 0, az admin fogja modositani
+            'role_id' => 2, // pl. tulajdonos
+        ]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return $this->response(['token' => $token,'user' => $user],'Sikeres regisztráció', 201);
     }
 }
