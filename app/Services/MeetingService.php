@@ -45,6 +45,7 @@ class MeetingService
         return $meeting->load([
             'creator',
             'agenda_items.resolutions.votes.user',
+            'present_users',
         ]);
     }
 
