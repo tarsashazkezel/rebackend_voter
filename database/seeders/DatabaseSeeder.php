@@ -29,10 +29,10 @@ class DatabaseSeeder extends Seeder
 
         // 3. Tulajdonosok létrehozása (Összesen 100.00 tulajdoni hányad)
         $owners = [
-            ['name' => 'Minta János', 'email' => 'janos@haz.hu', 'ratio' => 25500.0],
-            ['name' => 'Nagy Erzsébet', 'email' => 'erzsi@haz.hu', 'ratio' => 15000.0],
-            ['name' => 'Kiss István', 'email' => 'pista@haz.hu', 'ratio' => 10250.0],
-            ['name' => 'Tóth Ottó', 'email' => 'otto@haz.hu', 'ratio' => 49250.0],
+            ['name' => 'Minta János', 'email' => 'janos@haz.hu', 'ratio' => 2550.0],
+            ['name' => 'Nagy Erzsébet', 'email' => 'erzsi@haz.hu', 'ratio' => 1500.0],
+            ['name' => 'Kiss István', 'email' => 'pista@haz.hu', 'ratio' => 1025.0],
+            ['name' => 'Tóth Ottó', 'email' => 'otto@haz.hu', 'ratio' => 4925.0],
         ];
 
         foreach ($owners as $owner) {
