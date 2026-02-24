@@ -17,7 +17,7 @@ class UserController
 
         $users = $this->service->index();
 
-        return $this->success(
+        return $this->response(
             UserResource::collection($users),
             'Felhasználók listája',200
         );
@@ -30,7 +30,7 @@ class UserController
     {
         $this->authorize('view', $user);
 
-        return $this->ok(
+        return $this->response(
             new UserResource(
                 $this->service->show($user)
             ),
@@ -46,7 +46,7 @@ class UserController
             $request->only(['role_id', 'ownership_ratio'])
         );
 
-        return $this->show(
+        return $this->response(
             new UserResource($updated),
             'Felhasználó frissítve'
         );

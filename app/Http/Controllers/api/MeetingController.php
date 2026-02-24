@@ -15,8 +15,6 @@ class MeetingController extends Controller
     
     public function create(MeetingRequest $request)
     {
-        // $validated = $request->validated();
-        // return $this->meetingService->create($validated);
         $validated = $request->validated();
         $meeting = $this->meetingService->create($validated);
 
@@ -27,43 +25,33 @@ class MeetingController extends Controller
             201
         );
     }
-    
-    // public function getMeeting(Meeting $meeting)
-    // {
-    //     return $this->meetingService->show($meeting);
-    // }
-
-    // public function getMeetings(){
-    //     // Fontos a kapcsolatok betöltése, hogy az Admin Dashboard lássa a pontokat
-    //     return Meeting::with(['agenda_items.resolutions.votes.user', 'present_users'])->orderBy('created_at', 'desc')->get();
-    // }
 
     public function getMeetings() {
-    return $this->formatMeetingsResponse(
-        Meeting::with(['agenda_items.resolutions.votes.user'])->latest()->get()
-    );
-}
+        return $this->formatMeetingsResponse(
+            Meeting::with(['agenda_items.resolutions.votes.user'])->latest()->get()
+        );
+    }
 
-public function getMeeting(Meeting $meeting) {
-    // Itt is le kell futtatni a számolást!
-    return $this->formatMeetingsResponse(collect([$meeting]))->first();
-}
+    public function getMeeting(Meeting $meeting) {
+        // Itt is le kell futtatni a számolást!
+        return $this->formatMeetingsResponse(collect([$meeting]))->first();
+    }
 
-// Segédfüggvény, hogy ne kelljen kétszer megírni a logikát
-private function formatMeetingsResponse($meetings) {
-    $meetings->each(function($meeting) {
-        $voters = collect();
-        foreach($meeting->agenda_items as $item) {
-            foreach($item->resolutions as $res) {
-                foreach($res->votes as $vote) {
-                    if($vote->user) $voters->push($vote->user);
+    // Segédfüggvény, hogy ne kelljen kétszer megírni a logikát
+    private function formatMeetingsResponse($meetings) {
+        $meetings->each(function($meeting) {
+            $voters = collect();
+            foreach($meeting->agenda_items as $item) {
+                foreach($item->resolutions as $res) {
+                    foreach($res->votes as $vote) {
+                        if($vote->user) $voters->push($vote->user);
+                    }
                 }
             }
-        }
-        $meeting->setRelation('present_users', $voters->unique('id')->values());
-    });
-    return $meetings;
-}
+            $meeting->setRelation('present_users', $voters->unique('id')->values());
+        });
+        return $meetings;
+    }
     public function update(Meeting $meeting, UpdateMeetingRequest $request)
     {
         $validated = $request->validated();
