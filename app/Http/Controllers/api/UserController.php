@@ -2,61 +2,61 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Services\UserService;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class UserController
+class UserController extends Controller
 {
-    use ApiResponse;
-
     public function __construct(
         protected UserService $service
     ) {}
+
     public function index()
     {
-       $this->authorize('viewAny', User::class);
+        // Ellenőrizzük az admint
+        if (Auth::user()->role_id !== 1) {
+            return response()->json(['message' => 'Nincs jogosultsága'], 403);
+        }
 
-        $users = $this->service->index();
+        $users = User::where('role_id', 2)->get();
 
-        return $this->response(
-            UserResource::collection($users),
-            'Felhasználók listája',200
-        );
+        // Szabványos Laravel válasz
+        return response()->json([
+            'data' => UserResource::collection($users),
+            'message' => 'Felhasználók listája'
+        ], 200);
     }
-    public function store(Request $request)
+
+    public function show(User $user)
     {
-        //
+        return response()->json([
+            'data' => new UserResource($this->service->show($user)),
+            'message' => 'Felhasználó adatai'
+        ], 200);
     }
-    public function show(string $id)
-    {
-        $this->authorize('view', $user);
 
-        return $this->response(
-            new UserResource(
-                $this->service->show($user)
-            ),
-            'Felhasználó adatai'
-        );
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'ownership_ratio' => 'required|numeric|min:0|max:10000',
+            'role_id' => 'sometimes|required|exists:roles,id'
+        ]);
+
+        $updated = $this->service->update($user, $validated);
+
+        return response()->json([
+            'data' => new UserResource($updated),
+            'message' => 'Felhasználó frissítve'
+        ], 200);
     }
-    public function update(Request $request, string $id)
+
+    public function destroy(User $user)
     {
-        $this->authorize('update', $user);
-
-        $updated = $this->service->update(
-            $user,
-            $request->only(['role_id', 'ownership_ratio'])
-        );
-
-        return $this->response(
-            new UserResource($updated),
-            'Felhasználó frissítve'
-        );
-    }
-    public function destroy(string $id)
-    {
-        $this->authorize('delete', $user);
-
         $this->service->delete($user);
-
-        return $this->noContent();
+        return response()->json(['message' => 'Felhasználó törölve'], 200);
     }
 }

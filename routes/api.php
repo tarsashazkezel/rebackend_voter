@@ -7,6 +7,7 @@ use App\Http\Controllers\api\MeetingController;
 use App\Http\Controllers\api\VoteController;
 use App\Http\Controllers\api\AgendaItemController;
 use App\Http\Controllers\api\ResolutionController;
+use App\Http\Controllers\api\UserController; // <--- EZT HOZZÁADTAM
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -17,6 +18,12 @@ Route::post('/register', [AuthController::class, 'register']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    
+    
+    Route::get('/users', [UserController::class, 'index']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
+    
+
     Route::get('/meetings', [MeetingController::class, 'getMeetings']);
     Route::get('/meetings/{meeting}', [MeetingController::class, 'getMeeting']);
     Route::post('/meetings', [MeetingController::class, 'create']);
