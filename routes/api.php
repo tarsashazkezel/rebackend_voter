@@ -11,22 +11,24 @@ use App\Http\Controllers\api\UserController; // <--- EZT HOZZÁADTAM
 
 use App\Models\User;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+/// 1. Az Angular ezt hívja meg a FORM elküldésekor (MENTÉS)
+// URL: POST http://localhost:8000/api/reset-password
+Route::post('/reset-password', [UserController::class, 'resetPassword']);
+
+// 2. Ez a "technikai" útvonal az e-mailben kiküldött linkhez (ÁTIRÁNYÍTÁS)
+// Fontos: a neve 'password.reset' kell legyen!
+Route::get('/reset-password/{token}', function ($token) {
+    // Itt csak átirányítjuk az embert az Angular frontendjére
+    return redirect("http://localhost:4200/reset-password?token=" . $token . "&email=" . request('email'));
+})->name('password.reset');
+
+// 2. Ez fogadja az Angular kérését (E-mail küldés indítása)
+// URL: http://localhost:8000/api/forgot-password
+Route::post('/forgot-password', [UserController::class, 'forgotPassword']);
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
-
-// Route::get('verify_email/{id}/{hash}', function (Request $request, $id, $hash) {
-//     $user = User::findOrFail($request->id);
-//     if($user->hasVerifiedEmail()) {
-//        return response()->json(['message' => 'Email already verified'], 304);
-//     }
-//     $user->markEmailAsVerified();
-//     return response()->json(['message' => 'Email verified successfully'], 200);
-// })->name('verification.verify')->middleware('signed');
-
 Route::post("register/confirm", [AuthController::class, 'confirmRegistration']);
 
 Route::middleware('auth:sanctum')->group(function () {
