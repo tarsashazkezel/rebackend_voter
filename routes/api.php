@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/users', [UserController::class, 'index']);
     Route::put('/users/{user}', [UserController::class, 'update']);
+    Route::get('/users/{user}', [UserController::class, 'show']);
     
 
     Route::get('/meetings', [MeetingController::class, 'getMeetings']);
