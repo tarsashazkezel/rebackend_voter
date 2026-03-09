@@ -30,6 +30,7 @@ class ResolutionController
             return $this->service->create([
                 'text' => $validated['comment'], // Az adatbázis 'text' oszlopába mentjük
                 'agenda_item_id' => $validated['agenda_item_id'],
+                'user_id' => auth()->id(),
             ]);
         } catch (Exception $e) {
             return response()->json(['message' => 'Hiba történt', 'error' => $e->getMessage()], 500);

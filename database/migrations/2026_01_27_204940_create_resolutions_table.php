@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text("text");
             $table->boolean("requires_unanimous")->default(false)->comment("38. § (3) egyhangúság");
             $table->foreignId("agenda_item_id")->constrained("agenda_items")->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

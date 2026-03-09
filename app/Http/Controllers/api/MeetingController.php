@@ -17,9 +17,6 @@ class MeetingController extends Controller
     {
         $validated = $request->validated();
         $meeting = $this->meetingService->create($validated);
-
-        // JAVÍTÁS: Betöltjük a kapcsolatokat az új meetinghez is, 
-        // hogy a frontend azonnal meg tudja jeleníteni a nullás adatokat is.
         return response()->json(
             $meeting->load(['agenda_items.resolutions.votes.user', 'present_users']), 
             201
@@ -27,32 +24,20 @@ class MeetingController extends Controller
     }
 
     public function getMeetings() {
-        return $this->formatMeetingsResponse(
-            Meeting::with(['agenda_items.resolutions.votes.user'])->latest()->get()
+        return response()->json(
+            Meeting::with(['agenda_items.resolutions.votes.user', 'present_users'])->latest()->get()
         );
     }
 
     public function getMeeting(Meeting $meeting) {
         // Itt is le kell futtatni a számolást!
-        return $this->formatMeetingsResponse(collect([$meeting]))->first();
+        return response()->json($meeting->load(
+            ['agenda_items.resolutions.votes.user',
+             'present_users'
+             ])
+        );
     }
-
-    // Segédfüggvény, hogy ne kelljen kétszer megírni a logikát
-    private function formatMeetingsResponse($meetings) {
-        $meetings->each(function($meeting) {
-            $voters = collect();
-            foreach($meeting->agenda_items as $item) {
-                foreach($item->resolutions as $res) {
-                    foreach($res->votes as $vote) {
-                        if($vote->user) $voters->push($vote->user);
-                    }
-                }
-            }
-            $meeting->setRelation('present_users', $voters->unique('id')->values());
-        });
-        return $meetings;
-    }
-    public function update(Meeting $meeting, UpdateMeetingRequest $request)
+       public function update(Meeting $meeting, UpdateMeetingRequest $request)
     {
         $validated = $request->validated();
         return $this->meetingService->update($meeting, $validated);
@@ -74,4 +59,20 @@ class MeetingController extends Controller
             ], 500);
         }
     }
+    public function attend(Meeting $meeting) 
+    {
+        $user = auth()->user();
+        if ($user->ownership_ratio <= 0) {
+            return response()->json(['message' => '0 TH-val nem vehet részt',"adat"=>$user], 403);
+        }
+        
+        // Ez rögzíti a júzert a meeting_user táblába
+        $meeting->present_users()->syncWithoutDetaching([$user->id]);
+        return response()->json(['success' => true]);
+    }   
+
+    public function toggleRepeated(Meeting $meeting) {
+        $meeting->update(['is_repeated' => !$meeting->is_repeated]);
+        return response()->json($meeting);
+}
 }

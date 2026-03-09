@@ -16,6 +16,7 @@ class Meeting extends Model
     ];
 
     protected $casts = [
+        'is_repeated' => 'boolean',
         'meeting_date' => 'datetime',
     ];
 
@@ -30,18 +31,6 @@ class Meeting extends Model
     }
     public function present_users()
     {
-        // return $this->hasMany(User::class, 'id', 'id')->whereRaw('1 = 0');
-        //     return User::whereHas('votes.resolution.agendaItem', function($query) {
-        //     $query->where('meeting_id', $this->id);
-        // })->get();
-            // Ez a legegyszerűbb módja, hogy a szavazókat visszakapd kapcsolatként
-    return $this->hasManyThrough(
-        User::class,
-        Vote::class,
-        'resolution_id', // votes táblán a kapcsoló (ez trükkös hasManyThrough-nál)
-        'id',            // users táblán az id
-        'id',            // meetings táblán az id
-        'user_id'        // votes táblán a user_id
-    )->distinct();
+        return $this->belongsToMany(User::class, 'meeting_user');
     }
 }

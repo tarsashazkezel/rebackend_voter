@@ -42,6 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/meetings', [MeetingController::class, 'getMeetings']);
     Route::get('/meetings/{meeting}', [MeetingController::class, 'getMeeting']);
     Route::post('/meetings', [MeetingController::class, 'create']);
+    Route::put('/users/{user}/toggle-status', [UserController::class, 'toggleStatus']);
+    Route::post('/meetings/{meeting}/attend', [MeetingController::class, 'attend']);
+    Route::put('/meetings/{meeting}/toggle-repeated', [MeetingController::class, 'toggleRepeated']);
+
     Route::put('/meetings/{meeting}', [MeetingController::class, 'update']);
     Route::delete('/meetings/{meeting}', [MeetingController::class, 'delete']);
     

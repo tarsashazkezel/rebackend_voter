@@ -15,7 +15,10 @@ class Resolution extends Model
     protected $casts = [
         'requires_unanimous' => 'boolean',
     ];
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function agendaItem()
     {
         return $this->belongsTo(AgendaItem::class);
