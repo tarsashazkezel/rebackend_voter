@@ -9,6 +9,8 @@ use App\Http\Controllers\api\AgendaItemController;
 use App\Http\Controllers\api\ResolutionController;
 use App\Http\Controllers\api\UserController; // <--- EZT HOZZÁADTAM
 
+use App\Models\User;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -16,6 +18,16 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+// Route::get('verify_email/{id}/{hash}', function (Request $request, $id, $hash) {
+//     $user = User::findOrFail($request->id);
+//     if($user->hasVerifiedEmail()) {
+//        return response()->json(['message' => 'Email already verified'], 304);
+//     }
+//     $user->markEmailAsVerified();
+//     return response()->json(['message' => 'Email verified successfully'], 200);
+// })->name('verification.verify')->middleware('signed');
+
+Route::post("register/confirm", [AuthController::class, 'confirmRegistration']);
 
 Route::middleware('auth:sanctum')->group(function () {
     

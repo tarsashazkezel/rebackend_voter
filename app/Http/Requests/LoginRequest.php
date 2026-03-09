@@ -37,13 +37,13 @@ class LoginRequest extends FormRequest
             'password.required' => 'A jelszó megadása kötelező.',
         ];
     }
-    public function failedValidation( Validator $validator ) {
+    // public function failedValidation( Validator $validator ) {
 
-        throw new HttpResponseException( response()->json([
+    //     throw new HttpResponseException( response()->json([
 
-            "success" => false,
-            "message" => "Adatbeviteli hiba",
-            "data" => $validator->errors()
-        ]));
-    }
+    //         "success" => false,
+    //         "message" => "Adatbeviteli hiba",
+    //         "data" => $validator->errors()
+    //     ]));
+    // }
 }

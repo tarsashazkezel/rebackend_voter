@@ -27,15 +27,11 @@ class ResolutionController
                 'comment' => 'required|string', 
                 'agenda_item_id' => 'required|exists:agenda_items,id',
             ]);
-
-            // JAVÍTÁS: Az adatbázisodban 'text' mező van! 
-            // A 'comment'-et vagy a 'title'-t (vagy a kettőt összefűzve) a 'text' mezőbe kell menteni.
             return $this->service->create([
                 'text' => $validated['comment'], // Az adatbázis 'text' oszlopába mentjük
                 'agenda_item_id' => $validated['agenda_item_id'],
             ]);
         } catch (Exception $e) {
-            // Így látni fogod a pontos hibaüzenetet a válaszban, ha még mindig elszáll
             return response()->json(['message' => 'Hiba történt', 'error' => $e->getMessage()], 500);
         }
     }

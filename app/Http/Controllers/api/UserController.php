@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    // Kivettem a trait-et, mert hibát okozott
     public function __construct(
         protected UserService $service
     ) {}
