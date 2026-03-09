@@ -10,6 +10,7 @@ use App\Mail\RegisterMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -30,13 +31,7 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Sikeres bejelentkezés',
                 'token' => $token,
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role_id' => $user->role_id,
-                    'ownership_ratio' => $user->ownership_ratio
-                ]
+                'user' => UserResource::make($user),
             ]);
         }
 

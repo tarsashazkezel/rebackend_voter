@@ -17,9 +17,8 @@ class UserResource extends JsonResource
         return [
             'id'    => $this->id,
             'name'  => $this->name,
-
-            // frontend szempontból hasznos
             'role'  => $this->role?->name,
+            "email" => $this->email,
             'is_admin' => $this->isAdmin(),
             'ownership_ratio' => $this->ownership_ratio,
         ];

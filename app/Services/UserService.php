@@ -2,6 +2,10 @@
 
 namespace App\Services;
 use App\Models\User;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
 class UserService
 { 
     public function index()
@@ -33,4 +37,23 @@ class UserService
     {
         $user->delete();
     }
+    public function sendResetLink(array $credentials)
+{
+    // A 'broker' küldi ki az e-mailt a Laravel alapértelmezett sablonjával
+    return Password::sendResetLink($credentials);
+}
+
+public function resetPassword(array $data)
+{
+    return Password::reset(
+        $data,
+        function ($user, $password) {
+            $user->password = Hash::make($password);
+            $user->setRememberToken(Str::random(60));
+            $user->save();
+            
+            event(new PasswordReset($user));
+        }
+    );
+}
 }

@@ -8,6 +8,7 @@ use App\Services\UserService;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 
 class UserController extends Controller
 {
@@ -21,7 +22,6 @@ class UserController extends Controller
         if (Auth::user()->role_id !== 1) {
             return response()->json(['message' => 'Nincs jogosultsága'], 403);
         }
-
         $users = User::where('role_id', 2)->get();
 
         // Szabványos Laravel válasz
@@ -29,6 +29,7 @@ class UserController extends Controller
             'data' => UserResource::collection($users),
             'message' => 'Felhasználók listája'
         ], 200);
+    
     }
 
     public function show(User $user)
@@ -58,5 +59,33 @@ class UserController extends Controller
     {
         $this->service->delete($user);
         return response()->json(['message' => 'Felhasználó törölve'], 200);
+    }
+    
+    public function forgotPassword(Request $request)
+    {
+    $request->validate(['email' => 'required|email']);
+
+    $status = $this->service->sendResetLink($request->only('email'));
+
+    return $status === Password::RESET_LINK_SENT
+        ? response()->json(['message' => 'Az e-mailt elküldtük.'], 200)
+        : response()->json(['message' => 'Nem tudtuk elküldeni az e-mailt.'], 400);
+    }
+
+    public function resetPassword(Request $request)
+    {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed', // 'password_confirmation' mezőt is küldeni kell!
+    ]);
+
+    $status = $this->service->resetPassword($request->only(
+        'email', 'password', 'password_confirmation', 'token'
+    ));
+
+    return $status === Password::PASSWORD_RESET
+        ? response()->json(['message' => 'A jelszó sikeresen megváltozott.'], 200)
+        : response()->json(['message' => 'Hiba a visszaállítás során (pl. lejárt token).'], 400);
     }
 }
