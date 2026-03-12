@@ -38,22 +38,22 @@ class UserService
         $user->delete();
     }
     public function sendResetLink(array $credentials)
-{
-    // A 'broker' küldi ki az e-mailt a Laravel alapértelmezett sablonjával
-    return Password::sendResetLink($credentials);
-}
+    {
+        // A 'broker' küldi ki az e-mailt a Laravel alapértelmezett sablonjával
+        return Password::sendResetLink($credentials);
+    }
 
-public function resetPassword(array $data)
-{
-    return Password::reset(
-        $data,
-        function ($user, $password) {
-            $user->password = Hash::make($password);
-            $user->setRememberToken(Str::random(60));
-            $user->save();
-            
-            event(new PasswordReset($user));
-        }
-    );
-}
+    public function resetPassword(array $data)
+    {
+        return Password::reset(
+            $data,
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->setRememberToken(Str::random(60));
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+    }
 }

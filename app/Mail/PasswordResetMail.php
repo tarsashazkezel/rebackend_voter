@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+
+class PasswordResetMail extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    public $url;
+    public $user;
+    
+    public function __construct($user, $token)
+    {
+        $this->user = $user;
+        // Közvetlenül az Angular felé mutató link
+        $this->url = "http://localhost:4200/reset-password?token={$token}&email={$user->email}";
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Jelszó visszaállítási kérelem',
+        );
+    }
+
+    /**
+     * Get the message content definition.
+     */
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.password_reset',
+        );
+    }
+
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     */
+    public function attachments(): array
+    {
+        return [];
+    }
+}

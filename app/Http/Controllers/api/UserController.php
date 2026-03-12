@@ -74,6 +74,12 @@ class UserController extends Controller
 
     public function resetPassword(Request $request)
     {
+        // Ez kiírja az összes beérkező adatot a laravel.log fájlba
+    \Log::info('Reset próbálkozás:', $request->all());
+
+    // Ellenőrizzük, hogy létezik-e egyáltalán token ehhez az emailhez
+    $record = \DB::table('password_reset_tokens')->where('email', $request->email)->first();
+    \Log::info('Adatbázisban lévő rekord:', (array)$record);
     $request->validate([
         'token' => 'required',
         'email' => 'required|email',
@@ -84,8 +90,14 @@ class UserController extends Controller
         'email', 'password', 'password_confirmation', 'token'
     ));
 
-    return $status === Password::PASSWORD_RESET
-        ? response()->json(['message' => 'A jelszó sikeresen megváltozott.'], 200)
-        : response()->json(['message' => 'Hiba a visszaállítás során (pl. lejárt token).'], 400);
+    if ($status === \Illuminate\Support\Facades\Password::PASSWORD_RESET) {
+        return response()->json(['message' => 'Sikeres!'], 200);
+    }
+
+    // Itt a titok: a __($status) lefordítja a Laravel hibaüzenetét
+    return response()->json([
+        'message' => __($status), 
+        'internal_status' => $status // Ez kiírja pl. hogy "passwords.token" vagy "passwords.user"
+    ], 400);
     }
 }
