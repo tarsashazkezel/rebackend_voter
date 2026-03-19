@@ -56,4 +56,9 @@ class UserService
             }
         );
     }
+    public function getUserId($username)
+    {
+        $user = User::where('name', $username)->first();
+        return $user?$user->id:null;
+    }
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\MeetingRequest;
 use App\Http\Requests\UpdateMeetingRequest;
 use App\Services\MeetingService;
+use App\Resources\MeetingResource;
 
 class MeetingController extends Controller
 {
@@ -25,8 +26,11 @@ class MeetingController extends Controller
 
     public function getMeetings() {
         return response()->json(
-            Meeting::with(['agenda_items.resolutions.votes.user', 'present_users'])->latest()->get()
+            Meeting::with(['agenda_items.resolutions.votes.user', 'present_users','agenda_items.resolutions.user'])->latest()->get()
         );
+        // return response()->json(
+        //   MeetingResource::collection( Meeting::with(['agenda_items.resolutions.votes.user', 'present_users','agenda_items.resolutions.user'])->latest()->get()),
+        // );
     }
 
     public function getMeeting(Meeting $meeting) {

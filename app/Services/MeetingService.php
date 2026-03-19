@@ -83,7 +83,8 @@ class MeetingService
         $this->resolutionData=[
                     'agenda_item_id' => $id,
                     'text' => $data['resolution_text'],
-                    'requires_unanimous' => false
+                    'requires_unanimous' => false,
+                    'user_id'=>Auth::id()
                 ];
         return $this->resolutionData;
     }

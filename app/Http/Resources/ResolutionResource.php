@@ -20,9 +20,10 @@ class ResolutionResource extends JsonResource
 
             'requires_unanimous' => $this->requires_unanimous,
 
-            'votes' => VoteResource::collection(
-                $this->whenLoaded('votes')
-            ),
+            "user" => new UserResource($this->whenLoaded('user')),
+            // 'votes' => VoteResource::collection(
+            //     $this->whenLoaded('votes')
+            // ),
         ];
     }
 }

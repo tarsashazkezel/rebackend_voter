@@ -23,15 +23,11 @@ class ResolutionController
     {
         try {
             $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'comment' => 'required|string', 
+                'text' => 'required|string|max:255',
                 'agenda_item_id' => 'required|exists:agenda_items,id',
-            ]);
-            return $this->service->create([
-                'text' => $validated['comment'], // Az adatbázis 'text' oszlopába mentjük
-                'agenda_item_id' => $validated['agenda_item_id'],
-                'user_id' => auth()->id(),
-            ]);
+                "username" => "required"
+                ]);
+            return $this->service->create($validated);
         } catch (Exception $e) {
             return response()->json(['message' => 'Hiba történt', 'error' => $e->getMessage()], 500);
         }
