@@ -32,6 +32,7 @@ class MeetingRequest extends FormRequest
             'agenda_items.*.title' => 'required|string',
             'agenda_items.*.description' => 'nullable|string',
             'agenda_items.*.resolution_text' => 'required|string',
+            "agenda_items.*.username" => "required",
         ];
     }
     public function messages(){
