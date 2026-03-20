@@ -41,20 +41,20 @@ class UserController extends Controller
     }
 
     public function update(Request $request, User $user)
-    {
-        $validated = $request->validate([
-            'ownership_ratio' => 'sometimes|numeric|min:0|max:10000',
-            'role_id' => 'sometimes|exists:roles,id',
-            'is_active' => 'sometimes|boolean'
-        ]);
+{
+    $validated = $request->validate([
+        'ownership_ratio' => 'sometimes|numeric|min:0|max:10000',
+        'role_id' => 'sometimes|exists:roles,id',
+        'is_active' => 'sometimes|boolean' // Engedélyezzük a státusz küldését
+    ]);
 
-        $updated = $this->service->update($user, $validated);
+    $updated = $this->service->update($user, $validated);
 
-        return response()->json([
-            'data' => new UserResource($updated),
-            'message' => 'Felhasználó frissítve'
-        ], 200);
-    }
+    return response()->json([
+        'data' => $updated,
+        'message' => 'Felhasználó frissítve'
+    ], 200);
+}
 
     public function destroy(User $user)
     {

@@ -19,19 +19,13 @@ class UserService
     }
 
     public function update(User $user, array $data): User
-    {
-        if (isset($data['role_id'])) {
-            $user->role_id = $data['role_id'];
-        }
+{
+    // A $user->update($data) parancs MINDENT elment, amit a Controller átad neki
+    // (is_active, ownership_ratio, role_id stb.)
+    $user->update($data);
 
-        if (isset($data['ownership_ratio'])) {
-            $user->ownership_ratio = $data['ownership_ratio'];
-        }
-
-        $user->save();
-
-        return $user;
-    }
+    return $user;
+}
 
     public function delete(User $user): void
     {

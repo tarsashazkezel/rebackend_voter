@@ -27,6 +27,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
             'ownership_ratio' => 35.5,
             'role_id' => 2, // owner
+            'is_active' => true,
         ]);
 
         User::create([
@@ -35,6 +36,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
             'ownership_ratio' => 25.0,
             'role_id' => 2, // owner
+            'is_active' => true,
         ]);
 
         User::create([
@@ -43,6 +45,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
             'ownership_ratio' => 0,
             'role_id' => 3, // auditor
+            'is_active' => true,
         ]);
     }
 }

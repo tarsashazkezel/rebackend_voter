@@ -13,12 +13,12 @@ use App\Resources\MeetingResource;
 class MeetingController extends Controller
 {
     public function __construct(protected MeetingService $meetingService) {
-        $this->middleware(function ($request, $next) {
-        if (auth()->check() && !auth()->user()->is_active) {
-            return response()->json(['message' => 'Fiók letiltva.'], 403);
-        }
-        return $next($request);
-    });
+    //     $this->middleware(function ($request, $next) {
+    //     if (auth()->check() && !auth()->user()->is_active) {
+    //         return response()->json(['message' => 'Fiók letiltva.'], 403);
+    //     }
+    //     return $next($request);
+    // });
     }
     
     public function create(MeetingRequest $request)

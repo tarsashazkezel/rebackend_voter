@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password123'),
                 'ownership_ratio' => $owner['ratio'],
                 'role_id' => $ownerRole->id,
+                'is_active' => true,
             ]);
         }
 
