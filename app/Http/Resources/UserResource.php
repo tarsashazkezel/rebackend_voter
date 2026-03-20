@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             "email" => $this->email,
             'is_admin' => $this->isAdmin(),
             'ownership_ratio' => $this->ownership_ratio,
+            "is_active" => $this->is_active
         ];
     }
 }

@@ -20,13 +20,18 @@ class UserService
 
     public function update(User $user, array $data): User
     {
-        if (isset($data['role_id'])) {
-            $user->role_id = $data['role_id'];
-        }
+       if (isset($data['role_id'])) {
+        $user->role_id = $data['role_id'];
+    }
 
-        if (isset($data['ownership_ratio'])) {
-            $user->ownership_ratio = $data['ownership_ratio'];
-        }
+    if (isset($data['ownership_ratio'])) {
+        $user->ownership_ratio = $data['ownership_ratio'];
+    }
+
+    // EZ HIÁNYZOTT:
+    if (isset($data['is_active'])) {
+        $user->is_active = $data['is_active'];
+    }
 
         $user->save();
 
