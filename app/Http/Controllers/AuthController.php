@@ -24,6 +24,12 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+            if (!$user->is_active) {
+                Auth::logout(); // Biztonság kedvéért kijelentkeztetjük a munkamenetből
+                return response()->json([
+                    'message' => 'Ez a fiók inaktív (elköltözött vagy letiltották). Kérjük, keresse fel a közös képviselőt.'
+                ], 403); // 403 Forbidden státuszkód
+            }
             // Token generálása (Sanctum)
             $token = $user->createToken('auth_token')->plainTextToken;
 

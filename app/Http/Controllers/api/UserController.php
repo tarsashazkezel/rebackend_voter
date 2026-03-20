@@ -43,8 +43,9 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'ownership_ratio' => 'required|numeric|min:0|max:10000',
-            'role_id' => 'sometimes|required|exists:roles,id'
+            'ownership_ratio' => 'sometimes|numeric|min:0|max:10000',
+            'role_id' => 'sometimes|exists:roles,id',
+            'is_active' => 'sometimes|boolean'
         ]);
 
         $updated = $this->service->update($user, $validated);

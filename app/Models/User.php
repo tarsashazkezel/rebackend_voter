@@ -19,6 +19,7 @@ class User extends Authenticatable
         'password',
         'ownership_ratio',
         'role_id',
+        'is_active',
     ];
 
     protected $hidden = [
@@ -28,6 +29,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'ownership_ratio' => 'float',
+        'is_active' => 'boolean',
     ];
 
     public function role()
