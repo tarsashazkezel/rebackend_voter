@@ -72,6 +72,7 @@ class AuthController extends Controller
             'password' =>bcrypt($data['password']),
             'ownership_ratio' => 0, ['ownership_ratio'], //alapbol 0, az admin fogja modositani
             'role_id' => 2, // pl. tulajdonos
+            'is_active' => true,
             "email_verified_at" => now()
         ]);
         Cache::forget('temp_user'.$token);
