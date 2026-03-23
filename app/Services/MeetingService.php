@@ -10,30 +10,37 @@ use Illuminate\Support\Facades\DB;
 
 class MeetingService
 {
-    private $agendaData = [];
-    private $resolutionData = [];
-
-    public function __construct(
-        protected AgendaItemService $agendaItemService,
-        protected ResolutionService $resolutionService
-    ){}
-
     public function create(array $data): Meeting
     {
         return DB::transaction(function () use ($data) {
-
+            // 1. Közgyűlés létrehozása
             $meeting = Meeting::create([
                 'title' => $data['title'],
                 'meeting_date' => $data['meeting_date'],
                 'location' => $data['location'],
                 'created_by' => Auth::id(),
+                'is_repeated' => false
             ]);
 
+            // 2. Napirendi pontok és határozatok mentése
             foreach ($data['agenda_items'] as $itemData) {
+                
+                // Közvetlenül a Model-t hívjuk a stabilitás miatt
+                $item = AgendaItem::create([
+                    'meeting_id' => $meeting->id,
+                    'title' => $itemData['title'],
+                    'description' => $itemData['description'] ?? null,
+                    'status' => 'PENDING'
+                ]);
 
-                $item = $this->agendaItemService->create($this->fillAgendaData($meeting->id,$itemData));
-
-                $this->resolutionService->create($this->fillResolutionData($item->id,$itemData));
+                // Határozat létrehozása user_id NÉLKÜL
+                // Így a frontend szavazható javaslatnak látja, nem felszólalásnak
+                Resolution::create([
+                    'agenda_item_id' => $item->id,
+                    'text' => $itemData['resolution_text'],
+                    'requires_unanimous' => false,
+                    'user_id' => null, 
+                ]);
             }
 
             return $meeting;
@@ -51,49 +58,16 @@ class MeetingService
 
     public function update(Meeting $meeting, array $data): Meeting
     {
-        // $meeting->update($data);
-        // return $meeting;
         $meeting->update([
-        'title' => $data['title'],
-        'meeting_date' => $data['meeting_date'],
-        'location' => $data['location'],
-    ]);
-
-    return $meeting->load(['agenda_items.resolutions.votes']);
-    
+            'title' => $data['title'],
+            'meeting_date' => $data['meeting_date'],
+            'location' => $data['location'],
+        ]);
+        return $meeting->load(['agenda_items.resolutions.votes']);
     }
 
     public function delete(Meeting $meeting): void
     {
         $meeting->delete();
-    }
-
-    protected function fillAgendaData($id,$data)
-    {
-        $this->agendaData=[
-                    'meeting_id' => $id,
-                    'title' => $data['title'],
-                    'description' => $data['description'] ?? null,
-                    'status' => 'PENDING'
-                ];
-        return $this->agendaData;
-    }
-    protected function fillResolutionData($id,$data)
-    {
-        $this->resolutionData=[
-                    'agenda_item_id' => $id,
-                    'text' => $data['resolution_text'],
-                    'requires_unanimous' => false,
-                    'username'=>$data['username']
-                ];
-        return $this->resolutionData;
-    }
-    protected function fillAgendaItems($meeting){
-        foreach ($data['agenda_items'] as $itemData) {
-
-                $item = AgendaItemService::create($this->fillAgendaData($meeting->id,$itemData));
-
-            ResolutionService::create($this->fillResolutionData($item->id,$itemData));
-        }
     }
 }

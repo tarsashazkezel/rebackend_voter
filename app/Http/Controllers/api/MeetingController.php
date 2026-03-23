@@ -84,7 +84,11 @@ class MeetingController extends Controller
     }   
 
     public function toggleRepeated(Meeting $meeting) {
-        $meeting->update(['is_repeated' => !$meeting->is_repeated]);
+        // $meeting->update(['is_repeated' => !$meeting->is_repeated]);
+        // return response()->json($meeting);
+        $meeting->is_repeated = !$meeting->is_repeated;
+        $meeting->save(); 
+
         return response()->json($meeting);
-}
+    }
 }

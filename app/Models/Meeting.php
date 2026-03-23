@@ -13,6 +13,7 @@ class Meeting extends Model
         'meeting_date',
         'location',
         'created_by',
+        'is_repeated',
     ];
 
     protected $casts = [
